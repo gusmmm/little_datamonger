@@ -27,6 +27,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "${PGADMIN_HOST_PORT:-5050}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
       postgres:
         condition: service_healthy
@@ -34,7 +36,7 @@ services:
       - pgsql_network
 
   nocodb:
-    image: nocodb/nocodb:2026.04.0
+    image: nocodb/nocodb:0.264.0
     restart: unless-stopped
     depends_on:
       postgres:
@@ -42,7 +44,7 @@ services:
     environment:
       NC_SSRF_ALLOWED_DOMAINS: "postgres,pgadmin"
       NC_ALLOW_LOCAL_EXTERNAL_DBS: "true"
-      NC_DB: "pg://postgres:5432?u=${POSTGRES_USER:-postgres}&p=${POSTGRES_PASSWORD}&d=${POSTGRES_DB:-postgres}"
+      NC_DB: "pg://postgres:5432?u=${POSTGRES_USER:-postgres}&p=${POSTGRES_PASSWORD}&d=${NC_DB_NAME:-nocodb_db}"
       NC_PUBLIC_URL: ${NC_PUBLIC_URL:-http://localhost:${NOCODB_HOST_PORT:-8999}}
     ports:
       - "${NOCODB_HOST_PORT:-8999}:8080"
@@ -53,6 +55,7 @@ services:
 
 volumes:
   postgres_data:
+  pgadmin_data:
   nocodb_data:
 
 networks:
