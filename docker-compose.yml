@@ -36,7 +36,7 @@ services:
       - pgsql_network
 
   nocodb:
-    image: nocodb/nocodb:0.264.0
+    image: nocodb/nocodb:0.301.5
     restart: unless-stopped
     depends_on:
       postgres:
