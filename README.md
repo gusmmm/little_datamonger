@@ -1,12 +1,13 @@
 # little_datamonger
 
-Dockerized PostgreSQL, pgAdmin, and NocoDB for quickly standing up a small database management stack.
+Dockerized PostgreSQL, pgAdmin, NocoDB, and Baserow for quickly standing up a small database management stack.
 
 ## What is included
 
 - PostgreSQL for the actual database storage
 - pgAdmin for direct database administration
 - NocoDB for a spreadsheet-style interface on top of Postgres
+- Baserow as a no-code database platform using the same Postgres service
 
 ## Requirements
 
@@ -36,6 +37,7 @@ The default ports are configurable through [.env](.env):
 - PostgreSQL: `localhost:15432`
 - pgAdmin: `http://localhost:5050`
 - NocoDB: `http://localhost:8999`
+- Baserow: `http://localhost:8085`
 
 If you change the ports in [.env](.env), the stack will use those values the next time you run Compose.
 
@@ -51,11 +53,16 @@ The most important variables are:
 - `POSTGRES_HOST_PORT`: host port exposed for PostgreSQL
 - `PGADMIN_HOST_PORT`: host port exposed for pgAdmin
 - `NOCODB_HOST_PORT`: host port exposed for NocoDB
+- `BASEROW_HOST_PORT`: host port exposed for Baserow
+- `BASEROW_PUBLIC_URL`: public URL used by Baserow
+- `BASEROW_DB_NAME`: PostgreSQL database name used by Baserow
+- `BASEROW_CADDY_ADDRESSES`: Caddy listen addresses for Baserow (default `:80`)
 
 ## Notes
 
 - Secrets should live in [.env](.env), not in the compose file.
 - The data lives in Docker volumes, so your database survives container restarts.
+- Baserow is configured to use the existing `postgres` service via external database settings.
 - You can stop the stack with `docker compose down`.
 - The service images are pinned to known versions so the stack behaves consistently across machines.
 

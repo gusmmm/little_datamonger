@@ -53,6 +53,27 @@ services:
     networks:
       - pgsql_network
 
+  baserow:
+    image: baserow/baserow:2.2.0
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      BASEROW_PUBLIC_URL: ${BASEROW_PUBLIC_URL:-http://localhost:${BASEROW_HOST_PORT:-8085}}
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${BASEROW_DB_NAME:-${POSTGRES_DB:-postgres}}
+      DATABASE_USER: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      BASEROW_CADDY_ADDRESSES: ${BASEROW_CADDY_ADDRESSES:-:80}
+    ports:
+      - "${BASEROW_HOST_PORT:-8085}:80"
+    volumes:
+      - ./volumes/baserow_data:/baserow/data
+    networks:
+      - pgsql_network
+
 networks:
   pgsql_network:
     driver: bridge 
