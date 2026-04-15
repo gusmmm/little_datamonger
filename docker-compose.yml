@@ -74,6 +74,32 @@ services:
     networks:
       - pgsql_network
 
+  mathesar:
+    image: mathesar/mathesar:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      ALLOWED_HOSTS: ${MATHESAR_ALLOWED_HOSTS:-*}
+      DEBUG: ${MATHESAR_DEBUG:-false}
+      SECRET_KEY: ${MATHESAR_SECRET_KEY-}
+      WEB_CONCURRENCY: ${MATHESAR_WEB_CONCURRENCY:-3}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${MATHESAR_DB_NAME:-${POSTGRES_DB:-postgres}}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${MATHESAR_HOST_PORT:-9080}:8000"
+    volumes:
+      - mathesar_media:/code/.media
+      - mathesar_static:/code/static
+      - mathesar_secrets:/code/.secrets
+    networks:
+      - pgsql_network
+
 networks:
   pgsql_network:
     driver: bridge 
@@ -83,3 +109,6 @@ volumes:
   nocodb_data:
   baserow_data:
   pgadmin_data:
+  mathesar_media:
+  mathesar_static:
+  mathesar_secrets:
