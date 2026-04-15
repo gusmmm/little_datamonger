@@ -9,7 +9,7 @@ services:
     ports:
       - "${POSTGRES_HOST_PORT:-15432}:5432"
     volumes:
-      - ./volumes/postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - pgsql_network
     healthcheck:
@@ -28,7 +28,7 @@ services:
     ports:
       - "${PGADMIN_HOST_PORT:-5050}:80"
     volumes:
-      - ./volumes/pgadmin_data:/var/lib/pgadmin
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
       postgres:
         condition: service_healthy
@@ -36,7 +36,7 @@ services:
       - pgsql_network
 
   nocodb:
-    image: nocodb/nocodb:0.301.5
+    image: nocodb/nocodb:0.301.4
     restart: unless-stopped
     depends_on:
       postgres:
@@ -49,7 +49,7 @@ services:
     ports:
       - "${NOCODB_HOST_PORT:-8999}:8080"
     volumes:
-      - ./volumes/nocodb_data:/usr/app/data
+      - nocodb_data:/usr/app/data
     networks:
       - pgsql_network
 
@@ -70,10 +70,16 @@ services:
     ports:
       - "${BASEROW_HOST_PORT:-8085}:80"
     volumes:
-      - ./volumes/baserow_data:/baserow/data
+      - baserow_data:/baserow/data
     networks:
       - pgsql_network
 
 networks:
   pgsql_network:
     driver: bridge 
+
+volumes:
+  postgres_data:
+  nocodb_data:
+  baserow_data:
+  pgadmin_data:
