@@ -58,6 +58,23 @@ The most important variables are:
 - `BASEROW_DB_NAME`: PostgreSQL database name used by Baserow
 - `BASEROW_CADDY_ADDRESSES`: Caddy listen addresses for Baserow (default `:80`)
 
+## Connecting Baserow to PostgreSQL
+
+Baserow has security restrictions that block connections to internal Docker hostnames and private IP ranges. To connect Baserow to the PostgreSQL database:
+
+1. In Baserow, create a new **Database connection** and use:
+   - **Host**: Your machine's local IP (e.g., `192.168.1.74`)
+   - **Port**: `15432` (the external PostgreSQL port from [.env](.env))
+   - **Database**: Value of `POSTGRES_DB` from [.env](.env)
+   - **Username**: Value of `POSTGRES_USER` from [.env](.env)
+   - **Password**: Value of `POSTGRES_PASSWORD` from [.env](.env)
+
+This works because Baserow connects through the host machine's external interface rather than the internal Docker network. To find your machine's IP, run:
+
+```bash
+hostname -I
+```
+
 ## Notes
 
 - Secrets should live in [.env](.env), not in the compose file.
